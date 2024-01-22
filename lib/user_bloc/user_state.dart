@@ -1,20 +1,40 @@
 import 'package:flutter/material.dart';
 
-@immutable
-abstract class UserState {}
+class UserState {
+  final List<Users> user;
+  final List<Jobs> jobs;
+  final bool isLoading;
 
-class UserInitial extends UserState {}
+  UserState({
+    this.user = const [],
+    this.jobs = const [],
+    this.isLoading = false,
+  });
 
-class UserLoadState extends UserState {
-  final List<Users> users;
-
-  UserLoadState({required this.users});
+  UserState copyWith(
+      {
+        List<Users>? user,
+        List<Jobs>? jobs,
+        bool isLoading = false
+      }) {
+    return UserState(
+      user: user??this.user,
+      jobs: jobs??this.jobs,
+      isLoading: isLoading,
+    );
+  }
 }
-class UserLoadingState extends UserState{}
 
 class Users {
   final String name;
   final String id;
 
   Users({required this.name, required this.id});
+}
+
+class Jobs {
+  final String name;
+  final String id;
+
+  Jobs({required this.name, required this.id});
 }

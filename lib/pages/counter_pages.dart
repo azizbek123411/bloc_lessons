@@ -1,4 +1,5 @@
-import 'package:bloc_lessons/counter_bloc.dart';
+import 'package:bloc_lessons/counter_bloc/counter_bloc.dart';
+import 'package:bloc_lessons/pages/user_page.dart';
 import 'package:bloc_lessons/user_bloc/user_bloc.dart';
 import 'package:bloc_lessons/user_bloc/user_event.dart';
 import 'package:bloc_lessons/user_bloc/user_state.dart';
@@ -16,7 +17,7 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     final counterBloc = CounterBloc();
-    final userBloc=UserBloc();
+    final userBloc = UserBloc();
     return MultiBlocProvider(
       providers: [
         BlocProvider<CounterBloc>(
@@ -28,6 +29,21 @@ class _HomepageState extends State<Homepage> {
       ],
       child: Scaffold(
         appBar: AppBar(
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UserPage(),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.white,
+                ))
+          ],
           backgroundColor: Colors.blue,
           title: const Text(
             "Flutter Bloc",
@@ -50,15 +66,17 @@ class _HomepageState extends State<Homepage> {
                   );
                 },
               ),
-              BlocBuilder<UserBloc,UserState>(
-                  bloc:userBloc,
-                  builder: (context,state){
-                  return  Column(
+              BlocBuilder<UserBloc, UserState>(
+                bloc: userBloc,
+                builder: (context, state) {
+                  final user = state.user;
+                  final job = state.jobs;
+                  return Column(
                     children: [
-                      if(state is UserLoadingState)
+                      if (user.isEmpty && state.isLoading)
                         const CircularProgressIndicator(),
-                      if(state is UserLoadState)
-                        ...state.users.map((e) => Text(e.name)),
+                      if (user.isNotEmpty) ...user.map((e) => Text(e.name)),
+                      if (job.isNotEmpty) ...job.map((e) => Text(e.name))
                     ],
                   );
                 },
@@ -81,12 +99,7 @@ class _HomepageState extends State<Homepage> {
               },
               child: const Icon(Icons.exposure_minus_1),
             ),
-            FilledButton(
-              onPressed: () {
-                userBloc.add(UserGetUsersEvent(counterBloc.state));
-              },
-              child: const Icon(Icons.person),
-            ),
+
           ],
         ),
       ),

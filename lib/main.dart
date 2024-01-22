@@ -1,4 +1,4 @@
-import 'package:bloc_lessons/pages.dart';
+import 'package:bloc_lessons/pages/counter_pages.dart';
 import 'package:flutter/material.dart';
 
 void main() {
